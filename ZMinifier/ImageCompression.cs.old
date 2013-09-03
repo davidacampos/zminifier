@@ -1,0 +1,87 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+
+namespace ZMinifier.lib
+{
+    class ImageCompression
+    {
+        static private bool _compressImage(string filePath, ImageType imageType)
+        {
+            string tmpFilePath = filePath + ".tmp";
+
+            using (Image img = (Bitmap)Image.FromFile(filePath))
+            {
+                ImageCodecInfo imgCodec;
+
+                switch (imageType)
+                {
+                    case ImageType.JPEG:
+                        imgCodec = _getEncoderInfo("image/jpeg");
+                        break;
+
+                    case ImageType.GIF:
+                        imgCodec = _getEncoderInfo("image/gif");
+                        break;
+
+                    case ImageType.PNG:
+                        imgCodec = _getEncoderInfo("image/png");
+                        break;
+
+                    default:
+                        imgCodec = null;
+                        break;
+                }
+
+                EncoderParameters encoderParams = new EncoderParameters(3);
+                encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, (long)90);
+                encoderParams.Param[1] = new EncoderParameter(System.Drawing.Imaging.Encoder.Compression, (long)100);
+                encoderParams.Param[2] = new EncoderParameter(System.Drawing.Imaging.Encoder.ColorDepth, (long)8);
+
+                img.Save(tmpFilePath, imgCodec, encoderParams);
+            }
+
+            long oldfileSize = new FileInfo(filePath).Length;
+            long newFileSize = new FileInfo(tmpFilePath).Length;
+
+            if (newFileSize < oldfileSize)
+            {
+                File.Delete(filePath);
+                File.Move(tmpFilePath, filePath);
+                return true;
+            }
+            else
+            {
+                File.Delete(tmpFilePath);
+                return false;
+            }
+        }
+
+        private enum ImageType
+        {
+            JPEG = 0,
+            GIF = 1,
+            PNG = 2
+        }
+
+        /// <summary> 
+        /// Returns the image codec with the given mime type 
+        /// </summary> 
+        private static ImageCodecInfo _getEncoderInfo(string mimeType)
+        {
+            // Get image codecs for all image formats 
+            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
+
+            // Find the correct image codec 
+            for (int i = 0; i < codecs.Length; i++)
+                if (codecs[i].MimeType == mimeType)
+                    return codecs[i];
+            return null;
+        }
+
+    }
+}
