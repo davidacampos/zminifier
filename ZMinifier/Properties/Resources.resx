@@ -118,17 +118,14 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="EcmaScript_NET_modified_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\lib\EcmaScript.NET.modified.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="jpegtran_exe" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\exe\jpegtran.exe;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="pngcrush_exe" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\exe\pngcrush.exe;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Yahoo_Yui_Compressor_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\lib\Yahoo.Yui.Compressor.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="NUglify_dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\lib\NUglify.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="gifsicle_exe" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\exe\gifsicle.exe;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

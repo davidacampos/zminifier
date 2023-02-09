@@ -84,9 +84,11 @@ namespace ZMinifier
             Console.WriteLine(dir);
 
             DirectoryInfo di = new DirectoryInfo(dir);
+            
             //JSS & CSS
             FileInfo[] jsFiles = di.GetFiles("*.js", SearchOption.AllDirectories);
             FileInfo[] cssFiles = di.GetFiles("*.css", SearchOption.AllDirectories);
+            FileInfo[] htmlFiles = di.GetFiles("*.html", SearchOption.AllDirectories);
 
             //Images
             FileInfo[] jpegFiles = di.GetFiles("*.jpg", SearchOption.AllDirectories);
@@ -96,17 +98,17 @@ namespace ZMinifier
             //Text files
             FileInfo[] textFiles = di.GetMultipleFiles(new string[]{"*.txt", "*.html", "*.aspx", "*.ascx", "*.master", "*.cs", "*.cshtml", "*.java", "*.jsp"}, SearchOption.AllDirectories);
 
-            double initialFileSize = jsFiles.GetTotalSize() + cssFiles.GetTotalSize() + jpegFiles.GetTotalSize() + gifFiles.GetTotalSize() + pngFiles.GetTotalSize();
+            double initialFileSize = jsFiles.GetTotalSize() + cssFiles.GetTotalSize() + htmlFiles.GetTotalSize() + jpegFiles.GetTotalSize() + gifFiles.GetTotalSize() + pngFiles.GetTotalSize();
             Console.WriteLine(string.Empty);
             Console.WriteLine(string.Format("Initial files size: {0:0,0.}KB", initialFileSize));
 
-            int countMinified = _minifyFiles(jsFiles, cssFiles);
+            int countMinified = _minifyFiles(jsFiles, cssFiles, htmlFiles);
             Console.WriteLine(string.Empty);
 
             int countCompressed = _compressFiles(jpegFiles, gifFiles, pngFiles);
             Console.WriteLine(string.Empty);
 
-            double finalFileSize = jsFiles.GetTotalSize() + cssFiles.GetTotalSize() + jpegFiles.GetTotalSize() + gifFiles.GetTotalSize() + pngFiles.GetTotalSize();
+            double finalFileSize = jsFiles.GetTotalSize() + cssFiles.GetTotalSize() + htmlFiles.GetTotalSize() + jpegFiles.GetTotalSize() + gifFiles.GetTotalSize() + pngFiles.GetTotalSize();
             Console.WriteLine(string.Format("Final files size: {0:0,0.}KB", finalFileSize));
             Console.WriteLine(string.Empty);
 
@@ -119,7 +121,7 @@ namespace ZMinifier
             Console.WriteLine(string.Format("KBs saved: {0:0,0.}KB", initialFileSize - finalFileSize));
             Console.WriteLine(string.Empty);
 
-            _addTimeStamps(textFiles.Union(jsFiles).Union(cssFiles).ToArray(), jsFiles.Union(cssFiles).Union(jpegFiles).Union(gifFiles).Union(pngFiles).ToArray());
+            _addTimeStamps(textFiles.Union(jsFiles).Union(cssFiles).ToArray(), jsFiles.Union(cssFiles).Union(htmlFiles).Union(jpegFiles).Union(gifFiles).Union(pngFiles).ToArray());
 
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey(true);
@@ -141,7 +143,7 @@ namespace ZMinifier
 
         #region JS/CSS
 
-        static private int _minifyFiles(FileInfo[] jsFiles, FileInfo[] cssFiles)
+        static private int _minifyFiles(FileInfo[] jsFiles, FileInfo[] cssFiles, FileInfo[] htmlFiles)
         {
             int count = 0;
             Console.WriteLine(string.Empty);
@@ -162,12 +164,25 @@ namespace ZMinifier
                 System.Threading.Thread.Sleep(50);
             }
 
-
             foreach (FileInfo cssFile in cssFiles)
             {
                 if (!_minifyCss(cssFile.FullName))
                 {
                     Console.WriteLine(cssFile.FullName);
+                }
+                else
+                {
+                    count++;
+                }
+
+                System.Threading.Thread.Sleep(50);
+            }
+            
+            foreach (FileInfo htmlFile in htmlFiles)
+            {
+                if (!_minifyHtml(htmlFile.FullName))
+                {
+                    Console.WriteLine(htmlFile.FullName);
                 }
                 else
                 {
@@ -190,7 +205,7 @@ namespace ZMinifier
 
             try
             {
-                source = Yahoo.Yui.Compressor.JavaScriptCompressor.Compress(source, false);
+            	source = NUglify.Uglify.Js(source).ToString();
             }
             catch (Exception)
             {
@@ -217,7 +232,34 @@ namespace ZMinifier
 
             try
             {
-                source = Yahoo.Yui.Compressor.CssCompressor.Compress(source);
+            	source = NUglify.Uglify.Css(source).ToString();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            using (System.IO.StreamWriter writer = new System.IO.StreamWriter(filePath))
+            {
+                writer.Write(source);
+                writer.Close();
+            }
+
+            return true;
+        }
+        
+        static private bool _minifyHtml(string filePath)
+        {
+            string source;
+            using (System.IO.StreamReader reader = new System.IO.StreamReader(filePath))
+            {
+                source = reader.ReadToEnd();
+                reader.Close();
+            }
+
+            try
+            {
+            	source = NUglify.Uglify.Html(source).ToString();
             }
             catch (Exception)
             {

@@ -60,12 +60,6 @@ namespace ZMinifier.Properties {
             }
         }
         
-        internal static byte[] EcmaScript_NET_modified_dll {
-            get {
-                object obj = ResourceManager.GetObject("EcmaScript_NET_modified_dll", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
         
         internal static byte[] gifsicle_exe {
             get {
@@ -88,11 +82,11 @@ namespace ZMinifier.Properties {
             }
         }
         
-        internal static byte[] Yahoo_Yui_Compressor_dll {
-            get {
-                object obj = ResourceManager.GetObject("Yahoo_Yui_Compressor_dll", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
+       internal static byte[] NUglify_dll {
+           get {
+               object obj = ResourceManager.GetObject("NUglify_dll", resourceCulture);
+               return ((byte[])(obj));
+           }
+       }
     }
 }
