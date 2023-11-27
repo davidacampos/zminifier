@@ -355,6 +355,9 @@ namespace ZMinifier
                     {
                         sb.Replace(modifiedFile.Name, modifiedFile.Name + "?__md5=" + md5[modifiedFile.FullName]);
                     }
+                    
+                    // When adding the MD5, it could have added something like file.html?__md5=XYZ?existingParam=existingValue, so we clean those...
+                    sb = new StringBuilder(Regex.Replace(sb.ToString(), "\\?(__md5=.{32})\\?", "?$1&"));
 
                     File.WriteAllText(sourceFile.FullName, sb.ToString(), Encoding.UTF8);
                 }
